@@ -1,8 +1,19 @@
 import firebase_admin
 import os
+import json
+from dotenv import load_dotenv
 from firebase_admin import credentials, firestore, messaging
+# initialize loading .env
+load_dotenv()
+# Get Firebase service key from environment
+firebase_key = os.getenv("FIREBASE_SERVICE_KEY")
+print(f'Firebase key: {firebase_key}')
+# Ensure the key is loaded
+if not firebase_key:
+    raise ValueError("FIREBASE_SERVICE_KEY is not set or loaded.")
 
-cred = credentials.Certificate(os.getenv("FIREBASE_SERVICE_KEY"))
+# Parse the JSON string
+cred = credentials.Certificate(json.loads(firebase_key))
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
