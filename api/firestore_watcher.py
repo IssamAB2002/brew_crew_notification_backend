@@ -74,14 +74,38 @@ def _watch_firestore():
         nonlocal has_seen_initial_snapshot
         if not has_seen_initial_snapshot:
             has_seen_initial_snapshot = True
+            logger.info(
+                "[BACKEND FCM] Initial snapshot received at %s. Skipping initial data (%s docs).",
+                read_time,
+                len(col_snapshot),
+            )
             return
 
         for change in changes:
             doc_data = change.document.to_dict() or {}
             change_type = change.type.name
 
+            # Firestore watcher debug details
+            logger.info(
+                "[BACKEND FCM] Change detected: type=%s doc_id=%s update_time=%s",
+                change_type,
+                change.document.id,
+                getattr(change.document, "update_time", None),
+            )
+            logger.debug(
+                "[BACKEND FCM] New data for doc_id=%s: %s",
+                change.document.id,
+                doc_data,
+            )
+
             title, body, event_type = _build_message(change_type, doc_data)
             try:
+                logger.info(
+                    "[BACKEND FCM] Sending notification: title=%s body=%s event=%s",
+                    title,
+                    body,
+                    event_type,
+                )
                 _send_fcm_notification(title, body, event_type, doc_data)
             except Exception as exc:
                 logger.exception("Failed to send FCM notification: %s", exc)
