@@ -32,13 +32,13 @@ def _build_message(change_type, doc_data):
     if change_type == "ADDED":
         return (
             "New Brew Added!",
-            f"A new brew has been added: {brew_name}",
+            f"A new brew has been added: {brew_name} bla bla bla",
             "added",
         )
     if change_type == "MODIFIED":
         return (
             "Brew Updated",
-            f"The brew '{brew_name}' has been updated",
+            f"The brew '{brew_name}' has been updated ra ra ra",
             "modified",
         )
     if change_type == "REMOVED":
